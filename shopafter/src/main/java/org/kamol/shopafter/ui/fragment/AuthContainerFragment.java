@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.facebook.Session;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 
 import org.kamol.shopafter.BaseFragment;
 import org.kamol.shopafter.R;
@@ -21,12 +22,12 @@ public abstract class AuthContainerFragment extends BaseFragment {
   public abstract void showAuthFragment();
 
   private void showSplashFragment() {
-    if (getChildFragmentManager().findFragmentByTag(SplashFragment.TAG) != null) {
-      splashFragment = getChildFragmentManager().findFragmentByTag(SplashFragment.TAG);
+    if (getChildFragmentManager().findFragmentByTag(SignInFragment.TAG) != null) {
+      splashFragment = getChildFragmentManager().findFragmentByTag(SignInFragment.TAG);
     } else {
-      splashFragment = new SplashFragment();
+      splashFragment = new SignInFragment();
       FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-      transaction.replace(R.id.ll_fragment_container, splashFragment, SplashFragment.TAG);
+      transaction.replace(R.id.ll_fragment_container, splashFragment, SignInFragment.TAG);
       transaction.addToBackStack(null);
       transaction.commit();
     }
@@ -44,7 +45,12 @@ public abstract class AuthContainerFragment extends BaseFragment {
     if (session != null && session.isOpened()) {
       showAuthFragment();
     } else {
-      showSplashFragment();
+      final ParseUser user = ParseUser.getCurrentUser();
+      if (user != null) {
+        showAuthFragment();
+      } else {
+        showSplashFragment();
+      }
     }
   }
 }
